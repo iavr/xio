@@ -30,3 +30,6 @@ No particular setup is needed.
 `xio/c++` is a template-only library, so requires no building. To use it, just include file [c++/xio](c++/xio)
 
 To use `xio/matlab`, just add its folder [matlab/](matlab/) to the Matlab path.
+
+Using `xio/matlab`
+----------------

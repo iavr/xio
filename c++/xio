@@ -1,0 +1,13 @@
+#ifndef XIO_XIO
+#define XIO_XIO
+
+//-----------------------------------------------------------------------------
+
+#include "config.hpp"
+#include "traits.hpp"
+#include "iter.hpp"
+#include "fun.hpp"
+
+//-----------------------------------------------------------------------------
+
+#endif // XIO_XIO

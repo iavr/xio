@@ -31,7 +31,7 @@ No particular setup is needed.
 
 To use `xio/matlab`, just add its folder [matlab/](matlab/) to the Matlab path.
 
-## Using `xio/c++`
+### Using `xio/c++`
 <!-- --------------- -->
 
 Arbitrary n-dimensional arrays are currently supported. Because `xio/c++` is completely open with respect to data structures, some setup is needed. Let's define a minimal n-dimensional array structure:

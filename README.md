@@ -33,7 +33,17 @@ There is currently little functionality available, and only a small subset is do
 
 ### `xio` binary format
 
-Built-in types are directly copied from/to memory. Containers are stored by storing their size as `uint64` followed by their elements. For n-dimensional arrays, the dimensions are stored instead of the size; these are usually just another container, represented as above. Fixed sizes, e.g. of built-in arrays and `std::array` in C++, are not stored. Nested containers and fixed sizes are only supported in C++. There is currently no provision for switching between big/little endian integer representation.
+Built-in types are directly copied from/to memory.
+
+Containers are represented by their size as `uint64` followed by their elements.
+
+N-dimensional arrays are similar, except that the size is replaced by the dimensions; these are usually just another container, represented as above.
+
+Nested containers are only supported in C++.
+
+Fixed sizes, e.g. of built-in arrays and `std::array` in C++, are not stored. This is only supported in C++.
+
+There is currently no provision for switching between big/little endian integer representation.
 
 ### Using `xio/c++`
 

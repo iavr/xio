@@ -1,8 +1,4 @@
-#include <iostream>
-#include <fstream>
 #include <numeric>
-#include <functional>
-#include <array>
 
 #ifndef XIO_FUN
 #define XIO_FUN
@@ -68,6 +64,7 @@ template<typename A, only_if<!is_cont_triv<A>{}> = 0>
 void resize(A& a, size_t) {}
 
 //-----------------------------------------------------------------------------
+// two different syntaxes for insert: sequence and associate containers
 
 template<typename A, typename I, only_if<is_seq<A>{}> = 0>
 void insert(A& a, I b, I e) { a.insert(a.end(), b, e); }
@@ -83,6 +80,15 @@ void support()
 {
 	static_assert(is_triv<A>(), "Object type unsupported for serialization. Consider extending xread()/xwrite().");
 }
+
+//-----------------------------------------------------------------------------
+// set stream buffer only if supported
+
+template<typename S, typename T, only_if<has_rdbuf<S>{}> = 0>
+void setbuf(S& s, chr<S>* u, T n) { if(u) s.rdbuf()->pubsetbuf(u, n); }
+
+template<typename S, typename C, typename T, only_if<!has_rdbuf<S>{}> = 0>
+void setbuf(S& s, chr<S>* u, T n) {}
 
 //-----------------------------------------------------------------------------
 

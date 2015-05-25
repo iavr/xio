@@ -62,6 +62,9 @@ template<typename A> using has_size = sfinae<_size, A>;
 template<typename A> using _back = decltype(std::declval<A>().back());
 template<typename A> using has_back = sfinae<_back, A>;
 
+template<typename A> using _rdbuf = decltype(std::declval<A>().rdbuf());
+template<typename A> using has_rdbuf = sfinae<_rdbuf, A>;
+
 //-----------------------------------------------------------------------------
 // container classification
 
@@ -91,6 +94,11 @@ using is_triv = std::is_trivially_copyable<A>;
 
 template<typename A>
 using is_cont_triv = expr<is_contiguous<A>() && is_triv<elem<A>>()>;
+
+//-----------------------------------------------------------------------------
+
+template<typename S>
+using chr = typename S::char_type;
 
 //-----------------------------------------------------------------------------
 

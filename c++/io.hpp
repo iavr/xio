@@ -1,11 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include <numeric>
-#include <functional>
-#include <array>
 
-#ifndef XIO_FUN
-#define XIO_FUN
+#ifndef XIO_IO
+#define XIO_IO
 
 //-----------------------------------------------------------------------------
 
@@ -30,13 +27,13 @@ template<typename S, typename A> void xwrite(S& s, A& a);
 template<typename T, typename C>
 std::streamsize io_size(size_t size) { return size * sizeof(T) / sizeof(C); }
 
-template<typename S, typename T, typename C = typename S::char_type>
+template<typename S, typename T, typename C = chr<S>>
 void read_mem(S& s, T* base, size_t size = 1)
 {
 	s.read(reinterpret_cast<C*>(base), io_size<T, C>(size));
 }
 
-template<typename S, typename T, typename C = typename S::char_type>
+template<typename S, typename T, typename C = chr<S>>
 void write_mem(S& s, const T* base, size_t size = 1)
 {
 	s.write(reinterpret_cast<const C*>(base), io_size<T, C>(size));
@@ -123,9 +120,6 @@ void read_rng(X x, S& s, A& a) { size_t n = read_dims(x, s, a); read_elem(s, a, 
 template<typename X, typename S, typename A, only_if<is_range<A>{}> = 0>
 void write_rng(X x, S& s, const A& a) { write_dims(x, s, a); write_elem(s, a); }
 
-//-----------------------------------------------------------------------------
-// assert supported type
-
 template<typename X, typename S, typename A, only_if<!is_range<A>{}> = 0>
 void read_rng(X, S& s, A& a) { support<A>(); }
 
@@ -188,17 +182,28 @@ struct xwriter
 };
 
 //-----------------------------------------------------------------------------
-// file operations, creating file streams from file names
+// open stream, optionally setting buffer, error handling; buffer can be
+// a pointer + size, a built-in array or any contiguous range of the
+// character type of the stream
 
-template<typename S, typename F>
-bool xopen(S& s, const F& f, char* u = nullptr, size_t n = buffer_size())
+template<typename S, typename F, typename T>
+bool xopen(S& s, const F& f, chr<S>* u, T n)
 {
-	if(u) s.rdbuf()->pubsetbuf(u, n);
+	setbuf(s, u, n);
 	s.open(f, std::ios_base::binary);
 	if (!s)  // TODO: exception
 		std::cerr << "Error: cannot open file " << f << ".\n";
 	return bool(s);
 }
+
+template<typename S, typename F, typename B>
+bool xopen(S& s, const F& f, B& b) { return xopen(s, f, base(b), size(b)); }
+
+template<typename S, typename F>
+bool xopen(S& s, const F& f) { return xopen(s, f, nullptr, buffer_size()); }
+
+//-----------------------------------------------------------------------------
+// file operations, creating file streams from file names
 
 template<typename F, typename A, typename... B>
 void xload(const F& f, A& a, B&... b)
@@ -249,4 +254,4 @@ using xio_details::xsave;
 
 //-----------------------------------------------------------------------------
 
-#endif // XIO_FUN
+#endif // XIO_IO

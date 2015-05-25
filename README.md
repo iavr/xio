@@ -27,7 +27,7 @@ No installation is needed.
 
 `xio/c++` is a template-only library, so requires no building. To use it, just `#include <xio>` and compile with `-I/path/to/xio/c++`.
 
-To use `xio/matlab`, just `addpath(/path/to/xio/matlab)`.
+To use `xio/matlab`, just `addpath('/path/to/xio/matlab')`.
 
 ## Usage
 

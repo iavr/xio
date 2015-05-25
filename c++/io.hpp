@@ -44,7 +44,9 @@ void write_mem(S& s, const T* base, size_t size = 1)
 // this is the fastest method
 
 template<typename S, typename A, only_if<is_contig<A>{}> = 0>
-void read_elem_triv(S& s, A& a, size_t) { read_mem(s, base(a), size(a)); }
+void read_elem_triv(S& s, A& a, size_t n) { read_mem(s, base(a), size(a));
+std::cout << "1 " << size(a) << ' ' << n << std::endl;
+}
 
 template<typename S, typename A, only_if<is_contig<A>{}> = 0>
 void write_elem_triv(S& s, const A& a) { write_mem(s, base(a), size(a)); }
@@ -58,6 +60,7 @@ void read_elem_triv(S& s, A& a, size_t n)
 {
 	std::vector<elem<A>> b(n);
 	read(s, b); insert(a, b.begin(), b.end());
+std::cout << "2 " << size(a) << ' ' << n << std::endl;
 }
 
 template<typename S, typename A, only_if<!is_contig<A>{}> = 0>

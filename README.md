@@ -87,7 +87,7 @@ though this use may be less efficient.
 
 Custom one-dimensional containers are easier to set up, since they do not need `dims()`. In general, `xio` considers an object to be a container as long as [`std::begin()`](http://en.cppreference.com/w/cpp/iterator/begin), [`std::end()`](http://en.cppreference.com/w/cpp/iterator/end) are defined on them. Other requirements include `clear()`, `resize()` or `insert()` depending on whether a container is contiguous or fixed. These are not precisely documented yet.
 
-Built-in arrays and all C++ standard sequence and associative containers are supported without any setup, except `forward_list` and container adaptors. Arbitrarily nested containers are also supported, though not tested.
+Built-in arrays and all C++ standard sequence and associative containers are supported without any setup, except `std::forward_list` and container adaptors. Arbitrarily nested containers are also supported, though not tested.
 
 The basic element types should be [`std::is_trivially_copyable`](http://en.cppreference.com/w/cpp/types/is_trivially_copyable), but arbitrary types can be easily supported by extending `xio`. This is not tested or documented yet.
 

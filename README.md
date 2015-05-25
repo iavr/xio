@@ -85,7 +85,7 @@ and load it with
 
 	xio::xload(name, a);
 
-Custom one-dimensional containers are easier to set up, since they do not need `dims()`. In general, `xio` considers an object to be a container as long as `std::begin()`, `std::end()` are defined on them. Other requirements for loading include `resize()` or `insert()` depending on whether a container is contiguous or not. These are not precisely documented yet.
+Custom one-dimensional containers are easier to set up, since they do not need `dims()`. In general, `xio` considers an object to be a container as long as [`std::begin()`](http://en.cppreference.com/w/cpp/iterator/begin), [`std::end()`](http://en.cppreference.com/w/cpp/iterator/end) are defined on them. Other requirements include `resize()` or `insert()` depending on whether a container is contiguous or not,  while further classification is based on `clear()`, `back()`. These are not precisely documented yet.
 
 Built-in arrays and all C++ standard sequence and associative containers are supported without any setup, except `forward_list` and container adaptors. Arbitrarily nested containers are also supported, though not tested.
 

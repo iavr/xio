@@ -209,7 +209,7 @@ template<typename F, typename A, typename... B>
 void xload(const F& f, A& a, B&... b)
 {
 	std::ifstream s;
-	char u[buffer_size()];
+	std::vector<char> u(buffer_size());
 	if(xopen(s, f, u)) xread(s, a, b...);
 }
 
@@ -217,7 +217,7 @@ template<typename F, typename A, typename... B>
 void xsave(const F& f, const A& a, const B&... b)
 {
 	std::ofstream s;
-	char u[buffer_size()];
+	std::vector<char> u(buffer_size());
 	if(xopen(s, f, u)) xwrite(s, a, b...);
 }
 

@@ -55,13 +55,23 @@ template<typename A, only_if<!is_range<A>{}> = 0>
 size_t total(const A& a) { return static_cast<size_t>(a); }
 
 //-----------------------------------------------------------------------------
-// resize() if sequence container, clear() ignore
+// resize() if contiguous range of trivial elements (read by memory copy),
+// clear() otherwise (read by insert())
 
 template<typename A, only_if<is_cont_triv<A>{}> = 0>
 void resize(A& a, size_t n) { a.resize(n); }
 
 template<typename A, only_if<!is_cont_triv<A>{}> = 0>
-void resize(A& a, size_t) {}
+void resize(A& a, size_t) { a.clear(); }
+
+//-----------------------------------------------------------------------------
+// fixed if cannot be resized, in one way or another
+
+template<typename A>
+using _resize = decltype(resize(gen<A>(), 0));
+
+template<typename A>
+using is_fixed = expr<!sfinae<_resize, A>{}>;
 
 //-----------------------------------------------------------------------------
 // two different syntaxes for insert: sequence and associate containers
@@ -83,12 +93,6 @@ void support()
 
 //-----------------------------------------------------------------------------
 // set stream buffer only if supported
-
-template<typename S, typename T, only_if<has_rdbuf<S>{}> = 0>
-void setbuf(S& s, chr<S>* u, T n) { if(u) s.rdbuf()->pubsetbuf(u, n); }
-
-template<typename S, typename C, typename T, only_if<!has_rdbuf<S>{}> = 0>
-void setbuf(S& s, chr<S>* u, T n) {}
 
 //-----------------------------------------------------------------------------
 

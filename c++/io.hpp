@@ -189,7 +189,7 @@ struct xwriter
 template<typename S, typename F, typename T>
 bool xopen(S& s, const F& f, chr<S>* u, T n)
 {
-	setbuf(s, u, n);
+	if(u) setbuf(s, u, n);
 	s.open(f, std::ios_base::binary);
 	if (!s)  // TODO: exception
 		std::cerr << "Error: cannot open file " << f << ".\n";

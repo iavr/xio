@@ -10,10 +10,15 @@
 namespace xio {
 
 //-----------------------------------------------------------------------------
+// stream configuration
 
 constexpr size_t buffer_size() { return 1 << 16; }
 
+template<typename S, typename T>
+void setbuf(S& s, typename S::char_type* b, T n) { s.rdbuf()->pubsetbuf(b, n); }
+
 //-----------------------------------------------------------------------------
+// contiguous container configuration
 
 template<typename T>
 std::false_type is_contiguous(const T&);

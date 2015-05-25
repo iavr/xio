@@ -33,13 +33,19 @@ using _true = expr<true>;
 using _false = expr<false>;
 
 //-----------------------------------------------------------------------------
+// shortcut to std::declval()
+
+template<typename A>
+typename std::add_rvalue_reference<A>::type gen();
+
+//-----------------------------------------------------------------------------
 // generic SFINAE test
 
 template<template<typename...> class F, typename... A, typename = F<A...>>
-std::true_type test(int);
+_true test(int);
 
 template<template<typename...> class F, typename... A>
-std::false_type test(...);
+_false test(...);
 
 template<template<typename...> class F, typename... A>
 using sfinae = decltype(test<F, A...>(0));
@@ -47,47 +53,40 @@ using sfinae = decltype(test<F, A...>(0));
 //-----------------------------------------------------------------------------
 // container method tests
 
-template<typename A> using _begin = decltype(std::begin(std::declval<A>()));
+template<typename A> using _begin = decltype(std::begin(gen<A>()));
 template<typename A> using has_begin = sfinae<_begin, A>;
 
-template<typename A> using _end = decltype(std::end(std::declval<A>()));
+template<typename A> using _end = decltype(std::end(gen<A>()));
 template<typename A> using has_end = sfinae<_end, A>;
 
-template<typename A> using _clear = decltype(std::declval<A>().clear());
-template<typename A> using has_clear = sfinae<_clear, A>;
-
-template<typename A> using _size = decltype(std::declval<A>().size());
+template<typename A> using _size = decltype(gen<A>().size());
 template<typename A> using has_size = sfinae<_size, A>;
 
-template<typename A> using _back = decltype(std::declval<A>().back());
-template<typename A> using has_back = sfinae<_back, A>;
-
-template<typename A> using _rdbuf = decltype(std::declval<A>().rdbuf());
-template<typename A> using has_rdbuf = sfinae<_rdbuf, A>;
+template<typename A> void _ins_rng(A& a) { a.insert(a.begin(), a.end()); }
+template<typename A> using _insert_rng = decltype(_ins_rng(gen<A>()));
+template<typename A> using has_insert_rng = sfinae<_insert_rng, A>;
 
 //-----------------------------------------------------------------------------
 // container classification
+// is_fixed is defined in fun.hpp
 
 template<typename A>
-using is_range = expr<has_begin<A>() && has_end<A>()>;
+using is_range = expr<has_begin<A>{} && has_end<A>{}>;
 
 template<typename A>
-using is_contig = decltype(is_contiguous(std::declval<A>()));
+using is_contig = decltype(is_contiguous(gen<A>()));
 
 template<typename A>
-using is_fixed = expr<!has_clear<A>()>;
-
-template<typename A>
-using is_seq = has_back<A>;
+using is_seq = expr<!has_insert_rng<A>{}>;
 
 //-----------------------------------------------------------------------------
 // iterator and value type without members, only via begin()
 
 template<typename A>
-using iter = decltype(std::begin(std::declval<A>()));
+using iter = decltype(std::begin(gen<A>()));
 
 template<typename A>
-using elem = typename std::decay<decltype(*std::begin(std::declval<A>()))>::type;
+using elem = typename std::decay<decltype(*std::begin(gen<A>()))>::type;
 
 //-----------------------------------------------------------------------------
 // element classification
@@ -96,7 +95,7 @@ template<typename A>
 using is_triv = std::is_trivially_copyable<A>;
 
 template<typename A>
-using is_cont_triv = expr<is_contig<A>() && is_triv<elem<A>>()>;
+using is_cont_triv = expr<is_contig<A>{} && is_triv<elem<A>>{}>;
 
 //-----------------------------------------------------------------------------
 

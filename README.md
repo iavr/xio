@@ -23,6 +23,8 @@ There is one folder for each supported language. The following are currently ava
 
 No installation is needed.
 
+For each supported language, `xio` is an independent library. What is common is only the identical binary format and the similar but not indentical syntax.
+
 `xio/c++` is a template-only library, so requires no building. To use it, just `#include <xio>` and compile with `-I/path/to/xio/c++`.
 
 To use `xio/matlab`, just `addpath(/path/to/xio/matlab)`.

@@ -160,6 +160,13 @@ void xwrite(S& s, A& a) { write_main(_true(), s, a); }
 // multi-argument generalizations for any data type
 
 template<typename S, typename A, typename B, typename... C>
+void read(S& s, A& a, B& b, C&... c) { read(s, a); read(s, b, c...); }
+
+template<typename S, typename A, typename B, typename... C>
+void write(S& s, const A& a, const B& b, const C&... c)
+	{ write(s, a); write(s, b, c...); }
+
+template<typename S, typename A, typename B, typename... C>
 void xread(S& s, A& a, B& b, C&... c) { xread(s, a); xread(s, b, c...); }
 
 template<typename S, typename A, typename B, typename... C>

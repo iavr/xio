@@ -37,7 +37,7 @@ There is currently little functionality available, and only a small subset is do
 
 Built-in types are directly copied from/to memory.
 
-Containers are represented by their size as [`uint64_t`](http://en.cppreference.com/w/cpp/types/integer) followed by their elements.
+Containers are represented by their size as 64-bit unsigned integer followed by their elements.
 
 N-dimensional arrays are similar, except that the size is replaced by the dimensions; these are expected to be one-dimensional containers, represented as above.
 

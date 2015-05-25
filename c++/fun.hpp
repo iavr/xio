@@ -29,7 +29,8 @@ template<typename A, only_if<has_size<A>{}> = 0>
 size_t size(const A& a) { return a.size(); }
 
 //-----------------------------------------------------------------------------
-// default dimensions for arbitrary 1-dimensional range
+// default dimensions for arbitrary 1-dimensional range, represented as
+// 64-bit unsigned integer
 
 template<typename A, only_if<is_range<A>{}> = 0>
 uint64_t dims(const A& a) { return size(a); }

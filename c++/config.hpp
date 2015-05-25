@@ -31,7 +31,6 @@ std::true_type is_contiguous(const std::array<T,N>&);
 template<typename T>
 std::true_type is_contiguous(const std::vector<T>&);
 
-template<>
 std::false_type is_contiguous(const std::vector<bool>&);
 
 template<typename C, typename T>

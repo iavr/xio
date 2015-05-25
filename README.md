@@ -8,7 +8,7 @@
 
 ## Directory structure
 
-There is one folder for each suported language. The following are currently available:
+There is one folder for each supported language. The following are currently available:
 
 	/c++
 	/matlab

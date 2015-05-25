@@ -43,24 +43,24 @@ void write_mem(S& s, const T* base, size_t size = 1)
 // serialization of contiguous range trivial elements by direct memory copy;
 // this is the fastest method
 
-template<typename S, typename A, only_if<is_contiguous<A>{}> = 0>
+template<typename S, typename A, only_if<is_contig<A>{}> = 0>
 void read_elem_triv(S& s, A& a, size_t) { read_mem(s, base(a), size(a)); }
 
-template<typename S, typename A, only_if<is_contiguous<A>{}> = 0>
+template<typename S, typename A, only_if<is_contig<A>{}> = 0>
 void write_elem_triv(S& s, const A& a) { write_mem(s, base(a), size(a)); }
 
 //-----------------------------------------------------------------------------
 // serialization of non-contiguous range trivial elements using a contiguous
 // buffer for acceleration followed by custom element insertion
 
-template<typename S, typename A, only_if<!is_contiguous<A>{}> = 0>
+template<typename S, typename A, only_if<!is_contig<A>{}> = 0>
 void read_elem_triv(S& s, A& a, size_t n)
 {
 	std::vector<elem<A>> b(n);
 	read(s, b); insert(a, b.begin(), b.end());
 }
 
-template<typename S, typename A, only_if<!is_contiguous<A>{}> = 0>
+template<typename S, typename A, only_if<!is_contig<A>{}> = 0>
 void write_elem_triv(S& s, const A& a)
 {
 	std::vector<elem<A>> b(size(a));
@@ -206,19 +206,23 @@ bool xopen(S& s, const F& f) { return xopen(s, f, nullptr, buffer_size()); }
 // file operations, creating file streams from file names
 
 template<typename F, typename A, typename... B>
-void xload(const F& f, A& a, B&... b)
+bool xload(const F& f, A& a, B&... b)
 {
 	std::ifstream s;
 	std::vector<char> u(buffer_size());
-	if(xopen(s, f, u)) xread(s, a, b...);
+	bool ok = xopen(s, f, u);
+	if(ok) xread(s, a, b...);
+	return ok;
 }
 
 template<typename F, typename A, typename... B>
-void xsave(const F& f, const A& a, const B&... b)
+bool xsave(const F& f, const A& a, const B&... b)
 {
 	std::ofstream s;
 	std::vector<char> u(buffer_size());
-	if(xopen(s, f, u)) xwrite(s, a, b...);
+	bool ok = xopen(s, f, u);
+	if(ok) xwrite(s, a, b...);
+	return ok;
 }
 
 //-----------------------------------------------------------------------------

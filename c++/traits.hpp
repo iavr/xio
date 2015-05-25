@@ -72,6 +72,9 @@ template<typename A>
 using is_range = expr<has_begin<A>() && has_end<A>()>;
 
 template<typename A>
+using is_contig = decltype(is_contiguous(std::declval<A>()));
+
+template<typename A>
 using is_fixed = expr<!has_clear<A>()>;
 
 template<typename A>
@@ -93,7 +96,7 @@ template<typename A>
 using is_triv = std::is_trivially_copyable<A>;
 
 template<typename A>
-using is_cont_triv = expr<is_contiguous<A>() && is_triv<elem<A>>()>;
+using is_cont_triv = expr<is_contig<A>() && is_triv<elem<A>>()>;
 
 //-----------------------------------------------------------------------------
 

@@ -58,14 +58,7 @@ Arbitrary containers and n-dimensional arrays are currently supported. Because `
 		using Data::Data;
 	};
 
-This structure uses an arbitrary structure `Data` for data storage and another structure `Dims` to represent its dimensions. We have to tell `xio` whether `array_nd` uses contiguous storage, so that i/o is efficient:
-
-	namespace xio {
-		template<typename A, typename D>
-		struct is_contiguous<array_nd<A,D>> : is_contiguous<A> {};
-	}
-
-Finally, we have to tell it how to obtain the dimensions of a given array:
+This structure uses an arbitrary structure `Data` for data storage and another structure `Dims` to represent its dimensions. We have to tell `xio` how to obtain the dimensions of a given `array_nd`:
 
 	template<typename A, typename D>
 	D& dims(array_nd<A, D>& array) { return array.dims; }

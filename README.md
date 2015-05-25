@@ -75,7 +75,8 @@ Finally, we have to tell it how to obtain the dimensions of a given array:
 
 We are now ready to go. Assuming we have e.g. an array
 
-	array_nd<std::vector<int>> a;
+	using int_nd = array_nd<std::vector<int>>;
+	int_nd a;
 
 we can save it to file `name` with
 
@@ -84,6 +85,12 @@ we can save it to file `name` with
 and load it with
 
 	xio::xload(name, a);
+
+Alternatively,
+
+	a = xio::xload<int_nd>(name);
+
+though this use may be less efficient.
 
 Custom one-dimensional containers are easier to set up, since they do not need `dims()`. In general, `xio` considers an object to be a container as long as [`std::begin()`](http://en.cppreference.com/w/cpp/iterator/begin), [`std::end()`](http://en.cppreference.com/w/cpp/iterator/end) are defined on them. Other requirements include `resize()` or `insert()` depending on whether a container is contiguous or not,  while further classification is based on `clear()`, `back()`. These are not precisely documented yet.
 

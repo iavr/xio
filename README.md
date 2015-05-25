@@ -43,7 +43,7 @@ N-dimensional arrays are similar, except that the size is replaced by the dimens
 
 Nested containers are only supported in C++.
 
-Fixed sizes, e.g. of built-in arrays and `std::array` in C++, are not stored. This is only supported in C++.
+Fixed sizes, e.g. of built-in arrays and [`std::array`](http://en.cppreference.com/w/cpp/container/array) in C++, are not stored. This is only supported in C++.
 
 There is currently no provision for switching between big/little endian integer representation.
 

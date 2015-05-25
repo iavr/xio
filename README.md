@@ -105,16 +105,16 @@ On loading, the data type is automatically determined by the file extension:
 
 	ext   type
 	---   ----
-	.u1    uint8
-	.u2    uint16
-	.u4    uint32
-	.u8    uint64
-	.i1    int8
-	.i2    int16
-	.i4    int32
-	.i8    int64
-	.f4    single
-	.f8    double
+	.u1   uint8
+	.u2   uint16
+	.u4   uint32
+	.u8   uint64
+	.i1   int8
+	.i2   int16
+	.i4   int32
+	.i8   int64
+	.f4   single
+	.f8   double
 
 On saving, the actual data type of `a` is ignored and the data are converted and saved according to extension as above.
 

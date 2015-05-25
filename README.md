@@ -45,7 +45,7 @@ Nested containers are only supported in C++.
 
 Fixed sizes, e.g. of built-in arrays and [`std::array`](http://en.cppreference.com/w/cpp/container/array) in C++, are not stored. This is only supported in C++.
 
-There is currently no provision for switching between big/little endian integer representation.
+There is currently no provision for switching between big/little endian integer representation. This is planned to be supported, along with tuples (cell arrays in Matlab) and user-defined structures, by extending the current specification.
 
 ### Using `xio/c++`
 

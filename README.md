@@ -39,7 +39,7 @@ Built-in types are directly copied from/to memory.
 
 Containers are represented by their size as `uint64` followed by their elements.
 
-N-dimensional arrays are similar, except that the size is replaced by the dimensions; these are usually just another container, represented as above.
+N-dimensional arrays are similar, except that the size is replaced by the dimensions; these are expected to be one-dimensional containers, represented as above.
 
 Nested containers are only supported in C++.
 

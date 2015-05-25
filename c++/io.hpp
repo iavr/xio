@@ -130,7 +130,7 @@ template<typename X, typename S, typename A, only_if<!is_range<A>{}> = 0>
 void read_rng(X, S& s, A& a) { support<A>(); }
 
 template<typename X, typename S, typename A, only_if<!is_range<A>{}> = 0>
-void write_rng(X, S& s, const A& a) { extend<A>(); }
+void write_rng(X, S& s, const A& a) { support<A>(); }
 
 //-----------------------------------------------------------------------------
 // classification into trivial/non-trival type

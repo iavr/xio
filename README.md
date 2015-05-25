@@ -21,7 +21,7 @@ There is one folder for each suported language. The following are currently avai
 
 ## Installation
 
-No particular setup is needed.
+No installation is needed.
 
 `xio/c++` is a template-only library, so requires no building. To use it, just `#include <xio>`.
 
@@ -83,9 +83,11 @@ and load it with
 
 	xio::xload(name, a);
 
-Custom one-dimensional containers are easier to set up, since they do not need `dims()`. Built-in arrays and all C++ standard sequence and associative containers are supported without any setup, except `forward_list` and container adaptors. Arbitrarily nested containers are also supported, though not tested.
+Custom one-dimensional containers are easier to set up, since they do not need `dims()`. In general, `xio` considers an object to be a container as long as `std::begin()`, `std::end()` are defined on them. Other requirements for loading include `resize()` and `insert()` depending on whether a container is contiguous or not. These are not precisely documented yet.
 
-The basic element types should be [`std::is_trivially_copyable`](http://en.cppreference.com/w/cpp/types/is_trivially_copyable), but arbitrary types can be supported by extending `xio`. This is not tested or documented yet.
+Built-in arrays and all C++ standard sequence and associative containers are supported without any setup, except `forward_list` and container adaptors. Arbitrarily nested containers are also supported, though not tested.
+
+The basic element types should be [`std::is_trivially_copyable`](http://en.cppreference.com/w/cpp/types/is_trivially_copyable), but arbitrary types can be easily supported by extending `xio`. This is not tested or documented yet.
 
 ### Using `xio/matlab`
 

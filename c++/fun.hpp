@@ -1,4 +1,5 @@
 #include <numeric>
+#include <cstdint>
 
 #ifndef XIO_FUN
 #define XIO_FUN
@@ -22,16 +23,16 @@ auto base(A& a) -> decltype(&*std::begin(a)) { return &*std::begin(a); }
 // size() for arrays that support it, otherwise via begin()/end()
 
 template<typename A, only_if<!has_size<A>{}> = 0>
-size_t size(A& a) { return std::distance(std::begin(a), std::end(a)); }
+size_t size(const A& a) { return std::distance(std::begin(a), std::end(a)); }
 
 template<typename A, only_if<has_size<A>{}> = 0>
-size_t size(A& a) { return a.size(); }
+size_t size(const A& a) { return a.size(); }
 
 //-----------------------------------------------------------------------------
 // default dimensions for arbitrary 1-dimensional range
 
 template<typename A, only_if<is_range<A>{}> = 0>
-size_t dims(const A& a) { return size(a); }
+uint64_t dims(const A& a) { return size(a); }
 
 //-----------------------------------------------------------------------------
 // product of elements of a range (1 if empty)
@@ -59,19 +60,16 @@ size_t total(const A& a) { return static_cast<size_t>(a); }
 // clear() otherwise (read by insert())
 
 template<typename A, only_if<is_cont_triv<A>{}> = 0>
-void resize(A& a, size_t n) { a.resize(n); }
+void resize(A&& a, size_t n) { a.resize(n); }
 
 template<typename A, only_if<!is_cont_triv<A>{}> = 0>
-void resize(A& a, size_t) { a.clear(); }
+void resize(A&& a, size_t) { a.clear(); }
 
 //-----------------------------------------------------------------------------
 // fixed if cannot be resized, in one way or another
 
-template<typename A>
-using _resize = decltype(resize(gen<A>(), 0));
-
-template<typename A>
-using is_fixed = expr<!sfinae<_resize, A>{}>;
+template<typename A> using _resize = decltype(resize(gen<A>(), 0));
+template<typename A> using is_fixed = expr<!sfinae<_resize, A>{}>;
 
 //-----------------------------------------------------------------------------
 // two different syntaxes for insert: sequence and associate containers

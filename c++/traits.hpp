@@ -80,10 +80,7 @@ template<typename A>
 using is_seq = expr<!has_insert_rng<A>{}>;
 
 //-----------------------------------------------------------------------------
-// iterator and value type without members, only via begin()
-
-template<typename A>
-using iter = decltype(std::begin(gen<A>()));
+// element (value) type without members, only via begin()
 
 template<typename A>
 using elem = typename std::decay<decltype(*std::begin(gen<A>()))>::type;

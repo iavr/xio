@@ -20,8 +20,7 @@ void setbuf(S& s, typename S::char_type* b, T n) { s.rdbuf()->pubsetbuf(b, n); }
 //-----------------------------------------------------------------------------
 // contiguous container configuration
 
-template<typename T>
-std::false_type is_contiguous(const T&);
+std::false_type is_contiguous(...);
 
 template<typename T, size_t N>
 std::true_type is_contiguous(const T(&)[N]);

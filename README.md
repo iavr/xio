@@ -2,6 +2,8 @@
 
 `xio` is a library for generic input/output of arbitrary data in an open binary format among different languages and platforms. It is currently in a very early stage of development, supporting very few basic functionalities in C++ and Matlab.
 
+For each supported language, `xio` is an independent library. What is common is only the identical binary format and the similar but not indentical syntax.
+
 ## Licence
 
 `xio` has a 2-clause BSD license. See file [LICENSE](/LICENSE) for the complete license text.
@@ -22,8 +24,6 @@ There is one folder for each supported language. The following are currently ava
 ## Installation
 
 No installation is needed.
-
-For each supported language, `xio` is an independent library. What is common is only the identical binary format and the similar but not indentical syntax.
 
 `xio/c++` is a template-only library, so requires no building. To use it, just `#include <xio>` and compile with `-I/path/to/xio/c++`.
 

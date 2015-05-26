@@ -54,7 +54,7 @@ template<typename A, only_if<is_range<A>{}> = 0>
 size_t total(const A& a) { return size(a) ? prod(a) : 0; }
 
 template<typename A, only_if<!is_range<A>{}> = 0>
-size_t total(const A& a) { return static_cast<size_t>(a); }
+size_t total(const A& a) { return a; }
 
 //-----------------------------------------------------------------------------
 // resize() if contiguous range of trivial elements (read by memory copy),

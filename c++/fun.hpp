@@ -1,3 +1,4 @@
+#include <sstream>
 #include <numeric>
 #include <cstdint>
 
@@ -11,6 +12,28 @@ namespace xio {
 //-----------------------------------------------------------------------------
 
 namespace xio_details {
+
+//-----------------------------------------------------------------------------
+// inline stringstream
+
+struct ss
+{
+	std::stringstream s;
+	template<typename A>
+	ss& operator<<(const A& a) { s << a; return *this; }
+	operator std::string() { return s.str(); }
+};
+
+//-----------------------------------------------------------------------------
+// file open exception
+
+struct e_open : std::exception
+{
+	std::string msg;
+	e_open(const std::string& f) :
+		msg(ss() << "cannot open file " << f << "\n") {}
+	const char* what() const noexcept override { return msg.c_str(); }
+};
 
 //-----------------------------------------------------------------------------
 // array base pointer, only via begin(); this is exactly where abstraction

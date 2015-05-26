@@ -28,13 +28,13 @@ template<typename T, typename C>
 std::streamsize io_size(size_t size) { return size * sizeof(T) / sizeof(C); }
 
 template<typename S, typename T, typename C = chr<S>>
-void read_mem(S& s, T* base, size_t size = 1)
+void r_mem(S& s, T* base, size_t size = 1)
 {
 	s.read(reinterpret_cast<C*>(base), io_size<T, C>(size));
 }
 
 template<typename S, typename T, typename C = chr<S>>
-void write_mem(S& s, const T* base, size_t size = 1)
+void w_mem(S& s, const T* base, size_t size = 1)
 {
 	s.write(reinterpret_cast<const C*>(base), io_size<T, C>(size));
 }
@@ -44,24 +44,24 @@ void write_mem(S& s, const T* base, size_t size = 1)
 // this is the fastest method
 
 template<typename S, typename A, only_if<is_contig<A>{}> = 0>
-void read_elem_triv(S& s, A& a, size_t n) { read_mem(s, base(a), size(a)); }
+void r_elem_triv(S& s, A& a, size_t n) { r_mem(s, base(a), size(a)); }
 
 template<typename S, typename A, only_if<is_contig<A>{}> = 0>
-void write_elem_triv(S& s, const A& a) { write_mem(s, base(a), size(a)); }
+void w_elem_triv(S& s, const A& a) { w_mem(s, base(a), size(a)); }
 
 //-----------------------------------------------------------------------------
 // serialization of non-contiguous range trivial elements using a contiguous
 // buffer for acceleration followed by custom element insertion
 
 template<typename S, typename A, only_if<!is_contig<A>{}> = 0>
-void read_elem_triv(S& s, A& a, size_t n)
+void r_elem_triv(S& s, A& a, size_t n)
 {
 	std::vector<elem<A>> b(n);
 	read(s, b); insert(a, b.begin(), b.end());
 }
 
 template<typename S, typename A, only_if<!is_contig<A>{}> = 0>
-void write_elem_triv(S& s, const A& a)
+void w_elem_triv(S& s, const A& a)
 {
 	std::vector<elem<A>> b(size(a));
 	std::copy(a.begin(), a.end(), b.begin()); write(s, b);
@@ -72,20 +72,20 @@ void write_elem_triv(S& s, const A& a)
 // stream iterators; this is the most generic and slowest method
 
 template<typename S, typename A, only_if<is_triv<elem<A>>{}> = 0>
-void read_elem(S& s, A& a, size_t n) { read_elem_triv(s, a, n); }
+void r_elem(S& s, A& a, size_t n) { r_elem_triv(s, a, n); }
 
 template<typename S, typename A, only_if<is_triv<elem<A>>{}> = 0>
-void write_elem(S& s, A& a) { write_elem_triv(s, a); }
+void w_elem(S& s, A& a) { w_elem_triv(s, a); }
 
 template<typename S, typename A, only_if<!is_triv<elem<A>>{}> = 0>
-void read_elem(S& s, A& a, size_t)
+void r_elem(S& s, A& a, size_t)
 {
 	using T = elem<A>;
 	insert(a, begin<T>(s), end<T>(s));
 }
 
 template<typename S, typename A, only_if<!is_triv<elem<A>>{}> = 0>
-void write_elem(S& s, A& a)
+void w_elem(S& s, A& a)
 {
 	std::copy(a.begin(), a.end(), begin<elem<A>>(s));
 }
@@ -96,65 +96,65 @@ void write_elem(S& s, A& a)
 // serialization is ignored if `d` is fixed.
 
 template<bool X, typename S, typename A, only_if<!X || is_fixed<A>{}> = 0>
-size_t read_dims(expr<X>, S& s, A& a) { return 0; }
+size_t r_dims(expr<X>, S& s, A& a) { return size(a); }
 
 template<bool X, typename S, typename A, only_if<!X || is_fixed<A>{}> = 0>
-void write_dims(expr<X>, S& s, const A& a) {}
+void w_dims(expr<X>, S& s, const A& a) {}
 
 template<bool X, typename S, typename A, only_if<X && !is_fixed<A>{}> = 0>
-size_t read_dims(expr<X>, S& s, A& a)
+size_t r_dims(expr<X>, S& s, A& a)
 {
 	auto&& d = dims(a); xread(s, d);
 	size_t n = total(d); resize(a, n); return n;
 }
 
 template<bool X, typename S, typename A, only_if<X && !is_fixed<A>{}> = 0>
-void write_dims(expr<X>, S& s, const A& a) { xwrite(s, dims(a)); }
+void w_dims(expr<X>, S& s, const A& a) { xwrite(s, dims(a)); }
 
 //-----------------------------------------------------------------------------
 // range serialization: serialization of dimensions followed by elements
 
 template<typename X, typename S, typename A, only_if<is_range<A>{}> = 0>
-void read_rng(X x, S& s, A& a) { size_t n = read_dims(x, s, a); read_elem(s, a, n); }
+void r_rng(X x, S& s, A& a) { size_t n = r_dims(x, s, a); r_elem(s, a, n); }
 
 template<typename X, typename S, typename A, only_if<is_range<A>{}> = 0>
-void write_rng(X x, S& s, const A& a) { write_dims(x, s, a); write_elem(s, a); }
+void w_rng(X x, S& s, const A& a) { w_dims(x, s, a); w_elem(s, a); }
 
 template<typename X, typename S, typename A, only_if<!is_range<A>{}> = 0>
-void read_rng(X, S& s, A& a) { support<A>(); }
+void r_rng(X, S& s, A& a) { support<A>(); }
 
 template<typename X, typename S, typename A, only_if<!is_range<A>{}> = 0>
-void write_rng(X, S& s, const A& a) { support<A>(); }
+void w_rng(X, S& s, const A& a) { support<A>(); }
 
 //-----------------------------------------------------------------------------
 // classification into trivial/non-trival type
 
 template<typename X, typename S, typename A, only_if<!is_triv<A>{}> = 0>
-void read_main(X x, S& s, A& a) { read_rng(x, s, a); }
+void r_main(X x, S& s, A& a) { r_rng(x, s, a); }
 
 template<typename X, typename S, typename A, only_if<!is_triv<A>{}> = 0>
-void write_main(X x, S& s, const A& a) { write_rng(x, s, a); }
+void w_main(X x, S& s, const A& a) { w_rng(x, s, a); }
 
 template<typename X, typename S, typename A, only_if<is_triv<A>{}> = 0>
-void read_main(X, S& s, A& a) { read_mem(s, &a); }
+void r_main(X, S& s, A& a) { r_mem(s, &a); }
 
 template<typename X, typename S, typename A, only_if<is_triv<A>{}> = 0>
-void write_main(X, S& s, const A& a) { write_mem(s, &a); }
+void w_main(X, S& s, const A& a) { w_mem(s, &a); }
 
 //-----------------------------------------------------------------------------
 // classification into extended/non-extended serialization
 
 template<typename S, typename A>
-void read(S& s, A& a) { read_main(_false(), s, a); }
+void read(S& s, A& a) { r_main(_false(), s, a); }
 
 template<typename S, typename A>
-void write(S& s, A& a) { write_main(_false(), s, a); }
+void write(S& s, A& a) { w_main(_false(), s, a); }
 
 template<typename S, typename A>
-void xread(S& s, A& a) { read_main(_true(), s, a); }
+void xread(S& s, A& a) { r_main(_true(), s, a); }
 
 template<typename S, typename A>
-void xwrite(S& s, A& a) { write_main(_true(), s, a); }
+void xwrite(S& s, A& a) { w_main(_true(), s, a); }
 
 //-----------------------------------------------------------------------------
 // multi-argument generalizations for any data type
@@ -194,42 +194,36 @@ struct xwriter
 // character type of the stream
 
 template<typename S, typename F, typename T>
-bool xopen(S& s, const F& f, chr<S>* u, T n)
+void xopen(S& s, const F& f, chr<S>* u, T n)
 {
 	if(u) setbuf(s, u, n);
 	s.open(f, std::ios_base::binary);
-	if (!s)  // TODO: exception
-		std::cerr << "Error: cannot open file " << f << ".\n";
-	return bool(s);
+	if(!s) throw e_open(f);
 }
 
 template<typename S, typename F, typename B>
-bool xopen(S& s, const F& f, B& b) { return xopen(s, f, base(b), size(b)); }
+void xopen(S& s, const F& f, B& b) { xopen(s, f, base(b), size(b)); }
 
 template<typename S, typename F>
-bool xopen(S& s, const F& f) { return xopen(s, f, nullptr, buffer_size()); }
+void xopen(S& s, const F& f) { xopen(s, f, nullptr, buffer_size()); }
 
 //-----------------------------------------------------------------------------
 // file operations, creating file streams from file names
 
 template<typename F, typename A, typename... B>
-bool xload(const F& f, A& a, B&... b)
+void xload(const F& f, A& a, B&... b)
 {
 	std::ifstream s;
 	std::vector<char> u(buffer_size());
-	bool ok = xopen(s, f, u);
-	if(ok) xread(s, a, b...);
-	return ok;
+	xopen(s, f, u); xread(s, a, b...);
 }
 
 template<typename F, typename A, typename... B>
-bool xsave(const F& f, const A& a, const B&... b)
+void xsave(const F& f, const A& a, const B&... b)
 {
 	std::ofstream s;
 	std::vector<char> u(buffer_size());
-	bool ok = xopen(s, f, u);
-	if(ok) xwrite(s, a, b...);
-	return ok;
+	xopen(s, f, u); xwrite(s, a, b...);
 }
 
 //-----------------------------------------------------------------------------

@@ -84,15 +84,15 @@ size_t total(const A& a) { return a; }
 // clear() otherwise (read by insert())
 
 template<typename A, only_if<is_cont_triv<A>{}> = 0>
-void resize(A&& a, size_t n) { a.resize(n); }
+void resize(A& a, size_t n) { a.resize(n); }
 
 template<typename A, only_if<!is_cont_triv<A>{}> = 0>
-void resize(A&& a, size_t) { a.clear(); }
+void resize(A& a, size_t) { a.clear(); }
 
 //-----------------------------------------------------------------------------
 // fixed if cannot be resized, in one way or another
 
-template<typename A> using _resize = decltype(resize(gen<A>(), 0));
+template<typename A> using _resize = decltype(resize(gen<A&>(), 0));
 template<typename A> using is_fixed = expr<!sfinae<_resize, A>{}>;
 
 //-----------------------------------------------------------------------------
